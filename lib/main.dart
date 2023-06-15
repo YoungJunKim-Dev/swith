@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swith/screens/home_screen.dart';
+import 'package:swith/widgets/bottom_navigaton_bar_widget.dart';
 
 void main() {
   runApp(const App());
@@ -8,7 +8,6 @@ void main() {
 class App extends StatelessWidget {
   const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +16,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const MyBottomNavigationBar(),
     );
   }
 }
