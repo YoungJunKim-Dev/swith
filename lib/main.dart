@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swith/widgets/bottom_navigaton_bar_widget.dart';
+import 'package:swith/screens/login_screen.dart';
 
 void main() {
   runApp(const App());
@@ -13,10 +13,11 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        fontFamily: 'Nanum Square Round',
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
         useMaterial3: true,
       ),
-      home: const MyBottomNavigationBar(),
+      home: const LoginScreen(),
     );
   }
 }

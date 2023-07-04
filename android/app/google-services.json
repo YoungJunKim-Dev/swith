@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "943929218726",
+    "project_id": "swith-cd2b1",
+    "storage_bucket": "swith-cd2b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943929218726:android:ed4b686ad8ea90c0184667",
+        "android_client_info": {
+          "package_name": "com.example.swith"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943929218726-9u8bvbjb0f2ecjub7umhu1042crac8dc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHXc6nOrjRWlyIx0maYZoUcWl7bvSe9xk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943929218726-9u8bvbjb0f2ecjub7umhu1042crac8dc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

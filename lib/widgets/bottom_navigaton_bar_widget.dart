@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:swith/screens/favorite_screen.dart';
-import 'package:swith/screens/home_screen.dart';
+import 'package:swith/screens/room_list_screen.dart';
 import 'package:swith/screens/setting_screen.dart';
+import 'package:swith/screens/test_screen.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
   const MyBottomNavigationBar({super.key});
@@ -14,9 +14,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   int _selectedIndex = 0;
 
   List<Widget> screenOptions = <Widget>[
-    HomeScreen(),
-    const FavoriteScreen(),
-    const SettingScreen()
+    const RoomListScreen(),
+    const SettingScreen(),
+    const TestScreen()
   ];
 
   void onNavigationTapped(int index) {
@@ -30,13 +30,17 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
     return Scaffold(
       body: screenOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.amber,
         onTap: onNavigationTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: "favorite"),
+              icon: Icon(Icons.meeting_room), label: "Rooms"),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: "settings"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.temple_buddhist), label: "test"),
         ],
         currentIndex: _selectedIndex,
       ),
