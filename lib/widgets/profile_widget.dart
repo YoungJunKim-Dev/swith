@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
+  final String userName, userEmail;
+  const Profile({super.key, required this.userEmail, required this.userName});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Icon(
-          Icons.person_2,
-          size: 120,
-          color: Colors.amber,
+        const CircleAvatar(
+          radius: 60,
+          child: Icon(
+            Icons.person_outline_rounded,
+            size: 100,
+          ),
         ),
-        SizedBox(
-          width: 40,
+        const SizedBox(
+          width: 20,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "홍길동",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 30),
+              userName,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 30),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Text("hgd@gmail.com")
+            Text(
+              userEmail,
+              style: const TextStyle(fontSize: 20),
+            )
           ],
         )
       ],

@@ -1,43 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:swith/screens/login_screen.dart';
+import 'package:swith/models/user_model.dart';
+import 'package:swith/screens/login/login_screen.dart';
 import 'package:swith/widgets/profile_widget.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
+  final UserModel user;
+  const SettingScreen({super.key, required this.user});
+
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
-  const SettingScreen({super.key});
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void onLogOutPressed(context) {
     storage.delete(key: "jwt");
 
     if (context.mounted) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const LoginScreen()));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => LoginScreen(
+                storage: storage,
+              )));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 50,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Settings")),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(
+            children: [
+              const Text(
+                "Settings",
+                style: TextStyle(fontSize: 50),
+              ),
+              Profile(
+                userName: widget.user.userName,
+                userEmail: widget.user.userEmail,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(),
+                        onPressed: () => onLogOutPressed(context),
+                        child: const Text("Log Out")),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        const Profile(),
-        const SizedBox(
-          height: 30,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  onPressed: () => onLogOutPressed(context),
-                  child: const Text("Log Out")),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }

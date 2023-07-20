@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:swith/screens/room_list_screen.dart';
-import 'package:swith/screens/setting_screen.dart';
 import 'package:swith/screens/test_screen.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
@@ -14,8 +12,8 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   int _selectedIndex = 0;
 
   List<Widget> screenOptions = <Widget>[
-    const RoomListScreen(),
-    const SettingScreen(),
+    // const RoomListScreen(),
+    // const SettingScreen(),
     const TestScreen()
   ];
 

@@ -1,48 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:swith/models/room_model.dart';
+import 'package:swith/models/user_model.dart';
+import 'package:swith/services/signaling_service.dart';
+import 'package:swith/widgets/chat/chat_widget.dart';
 
 class ChatBottomSheet extends StatefulWidget {
-  const ChatBottomSheet({super.key});
+  final SignallingService signallingService;
+  final RoomModel room;
+  final UserModel user;
+
+  const ChatBottomSheet(
+      {super.key,
+      required this.signallingService,
+      required this.room,
+      required this.user});
 
   @override
   State<ChatBottomSheet> createState() => _ChatBottomSheetState();
 }
 
 class _ChatBottomSheetState extends State<ChatBottomSheet> {
-  var _userEnteredMessage = "";
-  final _messageController = TextEditingController();
-
-  void onSendPressed() {
-    FocusScope.of(context).unfocus();
-    _userEnteredMessage = "";
-    _messageController.clear();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              decoration: const InputDecoration(labelText: "send a message..."),
-              onChanged: (value) => {
-                setState(() {
-                  _userEnteredMessage = value;
-                })
-              },
-            ),
-          ),
-          IconButton(
-            onPressed:
-                _userEnteredMessage.trim().isEmpty ? null : onSendPressed,
-            icon: const Icon(Icons.send),
-          ),
-        ],
-      ),
-    );
+    return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Chat(
+          signallingService: widget.signallingService,
+          room: widget.room,
+          user: widget.user,
+        ));
   }
 }

@@ -43,23 +43,37 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(widget.typeName)],
+        Padding(
+          padding: EdgeInsets.only(left: width * 0.08),
+          child: Text(widget.typeName),
         ),
-        ToggleButtons(
-          isSelected: _selections,
-          color:
-              widget.typeName == "broadcastType" ? Colors.grey : Colors.black,
-          selectedColor: Colors.white,
-          fillColor: Colors.blue,
-          splashColor:
-              widget.typeName == "broadcastType" ? Colors.amber : Colors.blue,
-          highlightColor: Colors.blue,
-          onPressed: onPressed,
-          children: widget.options,
+        const SizedBox(
+          height: 8,
+        ),
+        Center(
+          child: ToggleButtons(
+            isSelected: _selections,
+            color: widget.typeName == "broadcastType"
+                ? Theme.of(context).colorScheme.onSecondary
+                : Theme.of(context).colorScheme.primaryContainer,
+            selectedColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            fillColor: Theme.of(context).colorScheme.onPrimary,
+            splashColor: Theme.of(context).colorScheme.onPrimary,
+            highlightColor: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            constraints: BoxConstraints(
+              minHeight: 40.0,
+              minWidth: width * 0.74 / _selections.length,
+            ),
+            onPressed: onPressed,
+            children: widget.options,
+          ),
         ),
       ],
     );

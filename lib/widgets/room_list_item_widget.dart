@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:swith/models/room_model.dart';
+import 'package:swith/widgets/card_widget.dart';
 
 class RoomListItem extends StatelessWidget {
-  final String title;
-  final String username;
-  final int broadcastType;
-  final int studyType;
-  final int isPublic;
+  final RoomModel room;
 
-  const RoomListItem(
-      {super.key,
-      required this.title,
-      required this.username,
-      required this.broadcastType,
-      required this.studyType,
-      required this.isPublic});
+  const RoomListItem({super.key, required this.room});
 
+  static const chatTypeOptions = ['채팅', '비디오'];
   static const broadcastTypeOptions = ['1:1', '1:N', 'M:N'];
   static const studyTypeOptions = ['수능', '공무원', '취준', '개발'];
   static const isPublicOptions = ['공개방', '비공개방'];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
+    return MyContainer(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -32,7 +24,7 @@ class RoomListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  room.roomId,
                   style: const TextStyle(
                       fontWeight: FontWeight.w800, fontSize: 26),
                 ),
@@ -42,7 +34,7 @@ class RoomListItem extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      username,
+                      room.creator,
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -52,7 +44,7 @@ class RoomListItem extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      broadcastTypeOptions[broadcastType],
+                      chatTypeOptions[room.chatType],
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -62,7 +54,7 @@ class RoomListItem extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      studyTypeOptions[studyType],
+                      broadcastTypeOptions[room.broadcastType],
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -72,7 +64,17 @@ class RoomListItem extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      isPublicOptions[isPublic],
+                      studyTypeOptions[room.studyType],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: Colors.green),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      isPublicOptions[room.isPublic],
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -82,10 +84,10 @@ class RoomListItem extends StatelessWidget {
                 )
               ],
             ),
-            ElevatedButton.icon(
-                onPressed: () => {},
-                icon: const Icon(Icons.meeting_room),
-                label: const Text("enter"))
+            IconButton(
+              onPressed: () => {},
+              icon: const Icon(Icons.meeting_room),
+            )
           ],
         ),
       ),

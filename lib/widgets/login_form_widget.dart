@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
+import 'package:swith/models/user_model.dart';
+import 'package:swith/screens/room_list_screen.dart';
 import 'package:swith/services/api_service.dart';
-import 'package:swith/widgets/bottom_navigaton_bar_widget.dart';
 
 class LoginForm extends StatefulWidget {
   final FlutterSecureStorage storage;
@@ -12,9 +16,11 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  var logger = Logger();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late UserModel user;
 
   String emailInput = "";
   String passwordInput = "";
@@ -24,6 +30,7 @@ class _LoginFormState extends State<LoginForm> {
   void initState() {
     super.initState();
 
+    //textfield controllers
     _emailController.addListener(() {
       final String text = _emailController.text;
       _emailController.value = _emailController.value.copyWith(
@@ -32,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
             TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
-      print(_emailController.value.text);
+      logger.d(_emailController.value.text);
     });
     _passwordController.addListener(() {
       final String text = _passwordController.text;
@@ -42,7 +49,7 @@ class _LoginFormState extends State<LoginForm> {
             TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
-      print(_passwordController.value.text);
+      logger.d(_passwordController.value.text);
     });
   }
 
@@ -76,7 +83,7 @@ class _LoginFormState extends State<LoginForm> {
     return null;
   }
 
-  void onSignInPressed() {
+  void onSignInPressed() async {
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
       // If the form is valid, display a snackbar. In the real world,
@@ -84,14 +91,25 @@ class _LoginFormState extends State<LoginForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('LogIn Success')),
       );
-      // postSignIn
-      // if status code 200 & getJWT
-      // saveJWT
-      widget.storage.write(key: 'jwt', value: "this_is_jwt");
+
+      if (true) {
+        // postSignIn
+        // if status code 200 & getJWT
+
+        //_emailController.value.text
+        user = UserModel.fromJson(
+            {"userId": 1, "userName": "손흥민", "userEmail": "son7@gmail.com"});
+
+        // saveJWT
+        await widget.storage.write(key: 'jwt', value: "this_is_jwt");
+        await widget.storage.write(key: 'user_info', value: jsonEncode(user));
+      }
 
       if (context.mounted) {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const MyBottomNavigationBar()));
+            builder: (context) => RoomListScreen(
+                  user: user,
+                )));
       } // else
       // error message
     }
@@ -172,7 +190,6 @@ class _LoginFormState extends State<LoginForm> {
                 ElevatedButton(
                   onPressed: () => {ApiService.postLogIn()},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
                   child: const Text('Sign Up'),
@@ -189,7 +206,6 @@ class _LoginFormState extends State<LoginForm> {
                         _passwordController.text = "1Q2w3e4r!"
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 34)),
                       child: const Text('손흥민'),
@@ -201,7 +217,6 @@ class _LoginFormState extends State<LoginForm> {
                       onPressed: () =>
                           {_emailController.text = "hgd@gmail.com"},
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 34) // NEW
                           ),
