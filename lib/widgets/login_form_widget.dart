@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/user_model.dart';
+import 'package:swith/screens/login/signup_scren.dart';
 import 'package:swith/screens/room_list_screen.dart';
 import 'package:swith/services/api_service.dart';
 
@@ -83,36 +84,53 @@ class _LoginFormState extends State<LoginForm> {
     return null;
   }
 
-  void onSignInPressed() async {
+  void onLogInPressed() async {
     // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('LogIn Success')),
-      );
 
-      if (true) {
+      var response =
+          ApiService.postLogIn(_emailController.text, _passwordController.text);
+
+      if (response.statusCode == 200) {
         // postSignIn
         // if status code 200 & getJWT
 
         //_emailController.value.text
-        user = UserModel.fromJson(
-            {"userId": 1, "userName": "손흥민", "userEmail": "son7@gmail.com"});
+        if (_emailController.text == "son7@gmail.com") {
+          user = UserModel.fromJson(
+              {"userId": 1, "userName": "손흥민", "userEmail": "son7@gmail.com"});
+        } else {
+          user = UserModel.fromJson(
+              {"userId": 2, "userName": "홍길동", "userEmail": "hgd@gmail.com"});
+        }
 
         // saveJWT
         await widget.storage.write(key: 'jwt', value: "this_is_jwt");
         await widget.storage.write(key: 'user_info', value: jsonEncode(user));
+
+        //show login success snackbar & navigate to roomlistscreen
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('LogIn Success')),
+          );
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => RoomListScreen(
+                    user: user,
+                  )));
+        } // else
       }
 
-      if (context.mounted) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => RoomListScreen(
-                  user: user,
-                )));
-      } // else
       // error message
     }
+  }
+
+  void onSignUpPressed() {
+    if (context.mounted) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
+    } //
   }
 
   @override
@@ -132,9 +150,9 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(
             height: 20,
           ),
-          const Text("Your email address"),
+          const Text("Login with Your Account"),
           const SizedBox(
-            height: 6,
+            height: 14,
           ),
           TextFormField(
             controller: _emailController,
@@ -142,6 +160,7 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
+              labelText: "Email",
               suffixIcon: IconButton(
                   onPressed: () => {_emailController.text = ""},
                   icon: const Icon(Icons.cancel)),
@@ -150,16 +169,13 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(
             height: 20,
           ),
-          const Text("Your password"),
-          const SizedBox(
-            height: 6,
-          ),
           TextFormField(
             controller: _passwordController,
             validator: passwordValidator,
             obscureText: _isObscured,
             keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(
+              labelText: "Password",
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
                   onPressed: () => {
@@ -172,23 +188,26 @@ class _LoginFormState extends State<LoginForm> {
                       : const Icon(Icons.visibility_off)),
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: onSignInPressed,
+                  onPressed: onLogInPressed,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
-                  child: const Text('Sign In'),
+                  child: const Text('Log In'),
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 ElevatedButton(
-                  onPressed: () => {ApiService.postLogIn()},
+                  onPressed: onSignUpPressed,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
@@ -214,8 +233,10 @@ class _LoginFormState extends State<LoginForm> {
                       width: 8,
                     ),
                     ElevatedButton(
-                      onPressed: () =>
-                          {_emailController.text = "hgd@gmail.com"},
+                      onPressed: () => {
+                        _emailController.text = "hgd@gmail.com",
+                        _passwordController.text = "1Q2w3e4r!"
+                      },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 34) // NEW

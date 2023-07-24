@@ -19,7 +19,9 @@ class ChatBubble extends StatelessWidget {
       children: [
         if (detail["showTimestamp"] == true)
           Padding(
-            padding: const EdgeInsets.only(top: 10, left: 12),
+            padding: const EdgeInsets.only(
+              top: 10,
+            ),
             child: Align(
               alignment: Alignment.topCenter,
               child: Text(
@@ -40,31 +42,52 @@ class ChatBubble extends StatelessWidget {
                 ),
               ),
             ),
-        Align(
-          alignment: detail["isMyMessage"] == true
-              ? Alignment.topRight
-              : Alignment.topLeft,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
-            decoration: BoxDecoration(
-              //you can get rid of below line also
-              borderRadius: BorderRadius.circular(24),
-              //below line is for rectangular shape
-              shape: BoxShape.rectangle,
-              //you can change opacity with color here(I used black) for rect
-              color: Colors.white.withOpacity(0.1),
-              //I added some shadow, but you can remove boxShadow also.
-              boxShadow: const <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 5.0,
-                  offset: Offset(5.0, 5.0),
-                ),
-              ],
+        if (message.sender == "_welcome")
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
             ),
-            child: Text(message.content),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                message.content,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
           ),
-        ),
+        if (message.sender != "_welcome")
+          Align(
+            alignment: detail["isMyMessage"] == true
+                ? Alignment.topRight
+                : Alignment.topLeft,
+            child: Container(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.6),
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                shape: BoxShape.rectangle,
+                //you can change opacity with color here(I used black) for rect
+                color: detail["isMyMessage"] == true
+                    // ? Colors.white.withOpacity(0.1)
+                    ? const Color(0xff1F8AFF)
+                    : const Color(0xff808080),
+
+                //I added some shadow, but you can remove boxShadow also.
+                boxShadow: const <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.black38,
+                    blurRadius: 5.0,
+                    offset: Offset(5.0, 5.0),
+                  ),
+                ],
+              ),
+              child: Text(
+                message.content,
+                softWrap: true,
+              ),
+            ),
+          ),
       ],
     );
   }

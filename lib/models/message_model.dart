@@ -20,6 +20,6 @@ class MessageModel {
   MessageModel.fromJson(Map<String, dynamic> json)
       : sender = json["sender"],
         roomId = json["roomId"],
-        timestamp = json["timestamp"],
+        timestamp = DateTime.parse(json["timestamp"]),
         content = json["content"];
 }

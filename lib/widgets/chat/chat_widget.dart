@@ -35,7 +35,10 @@ class _ChatState extends State<Chat> {
   void initState() {
     signallingService = widget.signallingService;
     signallingService.socket?.on("message", (message) {
-      logger.d('received message : $message');
+      chats.add(MessageModel.fromJson(message));
+      if (mounted) {
+        setState(() {});
+      }
     });
     signallingService.socket?.on("welcome", (content) {
       var message = MessageModel(
@@ -96,13 +99,20 @@ class _ChatState extends State<Chat> {
             if (index == 0) {
             } else {
               var formerMessage = chats[index - 1];
+              //현재 메시지와 이전 메시지의 sender가 동일하면 표시 안함
               if (formerMessage.sender == currentMessage.sender) {
                 detail["showUserId"] = false;
               }
+              //현재 메시지와 이전 메시지의 timestamp가 동일하면 표시 안함
               if (DateFormat('h:mm a').format(formerMessage.timestamp) ==
                   DateFormat('h:mm a').format(currentMessage.timestamp)) {
                 detail["showTimestamp"] = false;
               }
+            }
+            //welcome 메세지일 경우 detail 설정
+            if (currentMessage.sender == "_welcome") {
+              detail["showUserId"] = false;
+              detail["showTimestamp"] = false;
             }
 
             return Padding(
