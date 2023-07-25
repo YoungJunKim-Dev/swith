@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:swith/models/user_model.dart';
 import 'package:swith/screens/login/login_screen.dart';
 import 'package:swith/screens/room_list_screen.dart';
+import 'package:swith/services/api_service.dart';
 
 var logger = Logger(
   printer: PrettyPrinter(),
@@ -42,17 +43,22 @@ class _AppState extends State<App> {
     //user의 정보가 있다면 바로 로그아웃 페이지로 넘어가게 합니다.
     if (jwt != null) {
       // 토큰 검증
+      var isAuthenticated = await ApiService.getAuthentication(jwt);
+      logger.d("isAuthenticated : $isAuthenticated");
+      if (isAuthenticated) {
+        logger.d("isAuthenticated : ", isAuthenticated);
+
+        // token verified?
+        var userInfo = await storage.read(key: "user_info");
+        user = UserModel.fromJson(jsonDecode(userInfo!));
+
+        isLoggedIn = true;
+      }
       // token unverified?
-
-      // token verified?
-      var userInfo = await storage.read(key: "user_info");
-      user = UserModel.fromJson(jsonDecode(userInfo!));
-      logger.d("user", user);
-
-      isLoggedIn = true;
-      logger.d(isLoggedIn);
       return isLoggedIn;
     } else {
+      logger.d("jwt null");
+
       return isLoggedIn;
     }
   }
@@ -79,8 +85,8 @@ class _AppState extends State<App> {
         home: FutureBuilder<bool>(
           future: _getJWT(),
           builder: (context, snapshot) {
-            logger.d(snapshot.hasData);
-            logger.d("data", snapshot.data);
+            // logger.d(snapshot.hasData);
+            // logger.d("data", snapshot.data);
 
             if (snapshot.hasData) {
               return snapshot.data!

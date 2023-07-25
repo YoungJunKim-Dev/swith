@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
@@ -26,6 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   String emailInput = "";
   String passwordInput = "";
   bool _isObscured = true;
+  bool _visibility = false;
 
   @override
   void initState() {
@@ -90,24 +91,21 @@ class _LoginFormState extends State<LoginForm> {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
 
-      var response =
-          ApiService.postLogIn(_emailController.text, _passwordController.text);
+      http.Response response = await ApiService.postLogIn(
+          _emailController.text, _passwordController.text);
 
       if (response.statusCode == 200) {
-        // postSignIn
-        // if status code 200 & getJWT
-
-        //_emailController.value.text
-        if (_emailController.text == "son7@gmail.com") {
-          user = UserModel.fromJson(
-              {"userId": 1, "userName": "손흥민", "userEmail": "son7@gmail.com"});
-        } else {
-          user = UserModel.fromJson(
-              {"userId": 2, "userName": "홍길동", "userEmail": "hgd@gmail.com"});
-        }
+        logger.d(response.body);
+        var result = jsonDecode(response.body);
+        user = UserModel.fromJson({
+          "userId": result["user_id"],
+          "userName": result["user_name"],
+          "userEmail": _emailController.text
+        });
 
         // saveJWT
-        await widget.storage.write(key: 'jwt', value: "this_is_jwt");
+        logger.d(result["token"]);
+        await widget.storage.write(key: 'jwt', value: result["token"]);
         await widget.storage.write(key: 'user_info', value: jsonEncode(user));
 
         //show login success snackbar & navigate to roomlistscreen
@@ -120,6 +118,9 @@ class _LoginFormState extends State<LoginForm> {
                     user: user,
                   )));
         } // else
+      } else {
+        _visibility = true;
+        setState(() {});
       }
 
       // error message
@@ -154,39 +155,62 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(
             height: 14,
           ),
-          TextFormField(
-            controller: _emailController,
-            validator: emailValidator,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: "Email",
-              suffixIcon: IconButton(
-                  onPressed: () => {_emailController.text = ""},
-                  icon: const Icon(Icons.cancel)),
+          Focus(
+            onFocusChange: (hasFocus) {
+              _visibility = false;
+              setState(() {});
+            },
+            child: TextFormField(
+              controller: _emailController,
+              validator: emailValidator,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: "Email",
+                suffixIcon: IconButton(
+                    onPressed: () => {_emailController.text = ""},
+                    icon: const Icon(Icons.cancel)),
+              ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          TextFormField(
-            controller: _passwordController,
-            validator: passwordValidator,
-            obscureText: _isObscured,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(
-              labelText: "Password",
-              border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                  onPressed: () => {
-                        setState(() {
-                          _isObscured = !_isObscured;
-                        })
-                      },
-                  icon: _isObscured
-                      ? const Icon(Icons.visibility)
-                      : const Icon(Icons.visibility_off)),
+          Focus(
+            onFocusChange: (hasFocus) {
+              _visibility = false;
+              setState(() {});
+            },
+            child: TextFormField(
+              controller: _passwordController,
+              validator: passwordValidator,
+              obscureText: _isObscured,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                    onPressed: () => {
+                          setState(() {
+                            _isObscured = !_isObscured;
+                          })
+                        },
+                    icon: _isObscured
+                        ? const Icon(Icons.visibility)
+                        : const Icon(Icons.visibility_off)),
+              ),
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Visibility(
+                visible: _visibility,
+                child: const Text(
+                  "You entered Wrong Email or Password",
+                  style: TextStyle(color: Colors.redAccent),
+                )),
           ),
           const SizedBox(
             height: 20,

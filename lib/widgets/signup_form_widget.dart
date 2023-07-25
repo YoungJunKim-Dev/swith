@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/user_model.dart';
@@ -28,6 +29,7 @@ class _SignupFormState extends State<SignupForm> {
   String emailInput = "";
   String passwordInput = "";
   bool _isObscured = true;
+  bool _visibility = false;
 
   @override
   void initState() {
@@ -134,9 +136,21 @@ class _SignupFormState extends State<SignupForm> {
 
   void onSignupPressed() async {
     if (_formKey.currentState!.validate()) {
-      var response = ApiService.postSignUp(_emailController.text,
-          _passwordController.text, _nameController.text);
-      if (response.success == true) {}
+      http.Response response = await ApiService.postSignUp(
+          _emailController.text,
+          _passwordController.text,
+          _nameController.text);
+      if (response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('SignUp Success!')),
+          );
+          Navigator.of(context).pop();
+        }
+      } else {
+        _visibility = true;
+        setState(() {});
+      }
     }
   }
 
@@ -161,53 +175,71 @@ class _SignupFormState extends State<SignupForm> {
           const SizedBox(
             height: 14,
           ),
-          TextFormField(
-            controller: _emailController,
-            validator: emailValidator,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              labelText: "Email",
-              border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                  onPressed: () => {_emailController.text = ""},
-                  icon: const Icon(Icons.cancel)),
+          Focus(
+            onFocusChange: (hasFocus) {
+              _visibility = false;
+              setState(() {});
+            },
+            child: TextFormField(
+              controller: _emailController,
+              validator: emailValidator,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                    onPressed: () => {_emailController.text = ""},
+                    icon: const Icon(Icons.cancel)),
+              ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          TextFormField(
-            controller: _nameController,
-            validator: nameValidator,
-            keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              labelText: "Name",
-              border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                  onPressed: () => {_nameController.text = ""},
-                  icon: const Icon(Icons.cancel)),
+          Focus(
+            onFocusChange: (hasFocus) {
+              _visibility = false;
+              setState(() {});
+            },
+            child: TextFormField(
+              controller: _nameController,
+              validator: nameValidator,
+              keyboardType: TextInputType.name,
+              decoration: InputDecoration(
+                labelText: "Name",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                    onPressed: () => {_nameController.text = ""},
+                    icon: const Icon(Icons.cancel)),
+              ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          TextFormField(
-            controller: _passwordController,
-            validator: passwordValidator,
-            obscureText: _isObscured,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(
-              labelText: "Password",
-              border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                  onPressed: () => {
-                        setState(() {
-                          _isObscured = !_isObscured;
-                        })
-                      },
-                  icon: _isObscured
-                      ? const Icon(Icons.visibility)
-                      : const Icon(Icons.visibility_off)),
+          Focus(
+            onFocusChange: (hasFocus) {
+              _visibility = false;
+              setState(() {});
+            },
+            child: TextFormField(
+              controller: _passwordController,
+              validator: passwordValidator,
+              obscureText: _isObscured,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                    onPressed: () => {
+                          setState(() {
+                            _isObscured = !_isObscured;
+                          })
+                        },
+                    icon: _isObscured
+                        ? const Icon(Icons.visibility)
+                        : const Icon(Icons.visibility_off)),
+              ),
             ),
           ),
           const SizedBox(
@@ -231,6 +263,17 @@ class _SignupFormState extends State<SignupForm> {
                       ? const Icon(Icons.visibility)
                       : const Icon(Icons.visibility_off)),
             ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Visibility(
+                visible: _visibility,
+                child: const Text(
+                  "Email already exist",
+                  style: TextStyle(color: Colors.redAccent),
+                )),
           ),
           const SizedBox(
             height: 20,
