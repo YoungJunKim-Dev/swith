@@ -44,7 +44,6 @@ class _SignupFormState extends State<SignupForm> {
             TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
-      logger.d(_emailController.value.text);
     });
     _nameController.addListener(() {
       final String text = _nameController.text;
@@ -64,7 +63,6 @@ class _SignupFormState extends State<SignupForm> {
             TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
-      logger.d(_passwordController.value.text);
     });
     _confirmPasswordController.addListener(() {
       final String text = _confirmPasswordController.text;
@@ -75,7 +73,6 @@ class _SignupFormState extends State<SignupForm> {
             TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
-      logger.d(_confirmPasswordController.value.text);
     });
   }
 

@@ -17,26 +17,20 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
-    testJwt();
     super.initState();
-  }
-
-  void testJwt() async {
-    var jwt = await storage.read(key: "jwt");
-    var userInfo = await storage.read(key: 'user_info');
-
-    print("jwt from settingscreen : $jwt");
-    print("userInfo from settingscreen : $userInfo");
   }
 
   void onLogOutPressed(context) {
     storage.delete(key: "jwt");
 
     if (context.mounted) {
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (context) => LoginScreen(
-                storage: storage,
-              )));
+            storage: storage,
+          ),
+        ),
+      );
     }
   }
 

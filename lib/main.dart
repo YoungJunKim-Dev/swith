@@ -34,20 +34,15 @@ class _AppState extends State<App> {
 
   Future<bool> _getJWT() async {
     var isLoggedIn = false;
-    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
-    //(데이터가 없을때는 null을 반환을 합니다.)
 
     var jwt = await storage.read(key: "jwt");
-    logger.d("jwt", jwt);
 
-    //user의 정보가 있다면 바로 로그아웃 페이지로 넘어가게 합니다.
+    //토큰이 null이 아니면 토큰을 검증하고 토큰이 null이면 로그인 페이지로.
     if (jwt != null) {
       // 토큰 검증
       var isAuthenticated = await ApiService.getAuthentication(jwt);
       logger.d("isAuthenticated : $isAuthenticated");
       if (isAuthenticated) {
-        logger.d("isAuthenticated : ", isAuthenticated);
-
         // token verified?
         var userInfo = await storage.read(key: "user_info");
         user = UserModel.fromJson(jsonDecode(userInfo!));
@@ -57,16 +52,13 @@ class _AppState extends State<App> {
       // token unverified?
       return isLoggedIn;
     } else {
-      logger.d("jwt null");
-
+      //토큰 null
       return isLoggedIn;
     }
   }
 
   @override
   void initState() {
-    //비동기로 flutter secure storage 정보를 불러오는 작업.
-    // _getJWT();
     super.initState();
   }
 

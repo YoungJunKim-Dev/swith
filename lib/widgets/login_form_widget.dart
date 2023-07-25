@@ -26,6 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   String emailInput = "";
   String passwordInput = "";
   bool _isObscured = true;
+  //error 문구 visibility 변수
   bool _visibility = false;
 
   @override
@@ -104,7 +105,6 @@ class _LoginFormState extends State<LoginForm> {
         });
 
         // saveJWT
-        logger.d(result["token"]);
         await widget.storage.write(key: 'jwt', value: result["token"]);
         await widget.storage.write(key: 'user_info', value: jsonEncode(user));
 
@@ -122,8 +122,6 @@ class _LoginFormState extends State<LoginForm> {
         _visibility = true;
         setState(() {});
       }
-
-      // error message
     }
   }
 
