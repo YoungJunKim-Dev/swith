@@ -111,7 +111,7 @@ class _VideoRoomScreenState extends State<VideoRoomScreen> {
                 children: [
                   Text(
                     "Chat Room : ${widget.room.roomId}",
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),

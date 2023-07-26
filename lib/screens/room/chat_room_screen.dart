@@ -70,7 +70,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 children: [
                   Text(
                     "Chat Room : ${widget.room.roomId}",
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/room_model.dart';
@@ -6,6 +7,7 @@ import 'package:swith/screens/room/chat_room_screen.dart';
 import 'package:swith/screens/room/video_room_screen.dart';
 import 'package:swith/screens/setting_screen.dart';
 import 'package:swith/services/signaling_service.dart';
+import 'package:swith/widgets/password_dialog_widget.dart';
 import 'package:swith/widgets/room_list_item_widget.dart';
 import 'package:swith/widgets/new_room_bottom_sheet_widget.dart';
 
@@ -30,8 +32,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
     "isPublic": true,
     "isFull": true
   };
-
-  final List<RoomModel> roomLists = [];
 
   List<RoomListItem> roomList = [
     // RoomListItem(
@@ -110,6 +110,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
         var map = {
           "roomId": roomId,
           "creator": attributes['creator'],
+          "password": attributes['password'],
           "broadcastType": attributes['broadcastType'],
           "studyType": attributes['studyType'],
           "isPublic": attributes['isPublic'],
@@ -130,22 +131,34 @@ class _RoomListScreenState extends State<RoomListScreen> {
   }
 
   void onRoomItemTapped(context, roomItem) {
-    signallingService.socket?.emit("join_room",
-        {"roomId": roomItem.room.roomId, "username": widget.user.userName});
+    if (roomItem.room.isPublic == 0) {
+      signallingService.socket?.emit("join_room",
+          {"roomId": roomItem.room.roomId, "username": widget.user.userName});
 
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) {
-        return roomItem.room.chatType == 0
-            ? ChatRoomScreen(
-                room: roomItem.room,
-                signallingService: signallingService,
-                user: widget.user)
-            : VideoRoomScreen(
-                room: roomItem.room,
-                signallingService: signallingService,
-                user: widget.user);
-      }),
-    );
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) {
+          return roomItem.room.chatType == 0
+              ? ChatRoomScreen(
+                  room: roomItem.room,
+                  signallingService: signallingService,
+                  user: widget.user)
+              : VideoRoomScreen(
+                  room: roomItem.room,
+                  signallingService: signallingService,
+                  user: widget.user);
+        }),
+      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return PasswordDialog(
+              signallingService: signallingService,
+              room: roomItem.room,
+              user: widget.user,
+            );
+          });
+    }
   }
 
   void onSettingsPressed(context) {
@@ -205,11 +218,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                      onPressed: () async {
-                        getRoomLists();
-                      },
-                      icon: const Icon(Icons.refresh)),
+                  (defaultTargetPlatform == TargetPlatform.iOS) ||
+                          (defaultTargetPlatform == TargetPlatform.android)
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          onPressed: () async {
+                            getRoomLists();
+                          },
+                          icon: const Icon(Icons.refresh)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
