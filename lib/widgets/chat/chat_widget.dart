@@ -42,6 +42,7 @@ class _ChatState extends State<Chat> {
     });
     signallingService.socket?.on("welcome", (content) {
       var message = MessageModel(
+          userId: 0,
           sender: "_welcome",
           roomId: widget.room.roomId,
           timestamp: DateTime.now(),
@@ -61,6 +62,7 @@ class _ChatState extends State<Chat> {
 
     if (content != '') {
       var message = MessageModel(
+          userId: widget.user.userId,
           sender: widget.user.userName,
           roomId: widget.room.roomId,
           timestamp: DateTime.now(),
@@ -93,14 +95,14 @@ class _ChatState extends State<Chat> {
               "showTimestamp": true
             };
             var currentMessage = chats[index];
-            if (currentMessage.sender == widget.user.userName) {
+            if (currentMessage.userId == widget.user.userId) {
               detail["isMyMessage"] = true;
             }
             if (index == 0) {
             } else {
               var formerMessage = chats[index - 1];
               //현재 메시지와 이전 메시지의 sender가 동일하면 표시 안함
-              if (formerMessage.sender == currentMessage.sender) {
+              if (formerMessage.userId == currentMessage.userId) {
                 detail["showUserId"] = false;
               }
               //현재 메시지와 이전 메시지의 timestamp가 동일하면 표시 안함

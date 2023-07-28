@@ -43,10 +43,6 @@ class _SettingScreenState extends State<SettingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              const Text(
-                "Settings",
-                style: TextStyle(fontSize: 50),
-              ),
               Profile(
                 userName: widget.user.userName,
                 userEmail: widget.user.userEmail,

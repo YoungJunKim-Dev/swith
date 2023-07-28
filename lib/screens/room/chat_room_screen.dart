@@ -3,7 +3,6 @@ import 'package:swith/models/room_model.dart';
 import 'package:swith/models/user_model.dart';
 import 'package:swith/services/signaling_service.dart';
 import 'package:swith/widgets/chat/chat_widget.dart';
-//import webrtc & socketIO package
 
 class ChatRoomScreen extends StatefulWidget {
   final UserModel user;
@@ -46,8 +45,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     // signallingService.connectSocket();
   }
 
-  //비디오 온오프
-
   void onClosePressed() {
     Navigator.of(context).pop();
   }
@@ -56,24 +53,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.room.roomId),
+        ),
         body: Padding(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Chat Room : ${widget.room.roomId}",
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
               Expanded(
                   child: Chat(
                 signallingService: signallingService,

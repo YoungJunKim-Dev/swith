@@ -245,7 +245,6 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                         RoomTypesToggleButton(
                           typeName: "broadcastType",
                           options: const [
-                            Icon(Icons.person),
                             Icon(Icons.people),
                             Icon(Icons.groups)
                           ],

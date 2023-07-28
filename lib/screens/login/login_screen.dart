@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
-import 'package:swith/widgets/login_form_widget.dart';
+import 'package:swith/widgets/login/login_form_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   final FlutterSecureStorage storage;

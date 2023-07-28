@@ -7,6 +7,7 @@ import 'package:swith/screens/room/chat_room_screen.dart';
 import 'package:swith/screens/room/video_room_screen.dart';
 import 'package:swith/screens/setting_screen.dart';
 import 'package:swith/services/signaling_service.dart';
+import 'package:swith/widgets/filter/filter_dialog_widget.dart';
 import 'package:swith/widgets/password_dialog_widget.dart';
 import 'package:swith/widgets/room_list_item_widget.dart';
 import 'package:swith/widgets/new_room_bottom_sheet_widget.dart';
@@ -23,54 +24,15 @@ class _RoomListScreenState extends State<RoomListScreen> {
   late SignallingService signallingService;
   final ScrollController _scrollController = ScrollController();
 
-  var testTitle = "test";
-
   //방 목록 필터 옵션
-  final filterOptions = {
-    "broadcastType": "1:1",
-    "studyType": "development",
-    "isPublic": true,
-    "isFull": true
+  var filterOptions = {
+    "broadcastType": [true, false],
+    "studyType": [true, true, true, true],
+    "chatType": [true, false],
+    "isPublic": [true, true],
   };
 
-  List<RoomListItem> roomList = [
-    // RoomListItem(
-    //   room: RoomModel.fromJson(
-    //     {
-    //       "roomId": "공부하자",
-    //       "creator": "hgd",
-    //       "broadcastType": 0,
-    //       "studyType": 0,
-    //       "isPublic": 0,
-    //       "chatType": 1,
-    //     },
-    //   ),
-    // ),
-    // RoomListItem(
-    //   room: RoomModel.fromJson(
-    //     {
-    //       "roomId": "공부하자",
-    //       "creator": "hgd",
-    //       "broadcastType": 0,
-    //       "studyType": 0,
-    //       "isPublic": 0,
-    //       "chatType": 1,
-    //     },
-    //   ),
-    // ),
-    // RoomListItem(
-    //   room: RoomModel.fromJson(
-    //     {
-    //       "roomId": "공부하자",
-    //       "creator": "hgd",
-    //       "broadcastType": 0,
-    //       "studyType": 0,
-    //       "isPublic": 0,
-    //       "chatType": 1,
-    //     },
-    //   ),
-    // ),
-  ];
+  List<RoomListItem> roomList = [];
 
   @override
   void initState() {
@@ -150,14 +112,15 @@ class _RoomListScreenState extends State<RoomListScreen> {
       );
     } else {
       showDialog(
-          context: context,
-          builder: (context) {
-            return PasswordDialog(
-              signallingService: signallingService,
-              room: roomItem.room,
-              user: widget.user,
-            );
-          });
+        context: context,
+        builder: (context) {
+          return PasswordDialog(
+            signallingService: signallingService,
+            room: roomItem.room,
+            user: widget.user,
+          );
+        },
+      ).then((value) => filterOptions = value);
     }
   }
 
@@ -169,6 +132,15 @@ class _RoomListScreenState extends State<RoomListScreen> {
         );
       },
     ));
+  }
+
+  void onFilterPressed(context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const FilterDialog();
+      },
+    );
   }
 
   void onNewRoomPressed(context) {
@@ -189,32 +161,20 @@ class _RoomListScreenState extends State<RoomListScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Center(child: Text("Rooms")),
+        ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => onNewRoomPressed(context),
           label: const Text('New Room'),
           icon: const Icon(Icons.chat),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      "Rooms",
-                      style: TextStyle(fontSize: 50),
-                    ),
-                  ),
-                  TextButton.icon(
-                      onPressed: () {
-                        onSettingsPressed(context);
-                      },
-                      icon: const Icon(Icons.settings),
-                      label: const Text("settings")),
-                ],
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -229,16 +189,26 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Text("인기순"),
-                      const SizedBox(
-                        width: 6,
-                      ),
-                      const Text("최신순"),
-                      const SizedBox(
-                        width: 6,
+                      // const Text("인기순"),
+                      // const SizedBox(
+                      //   width: 6,
+                      // ),
+                      // const Text("최신순"),
+                      // const SizedBox(
+                      //   width: 6,
+                      // ),
+                      IconButton(
+                        onPressed: () {
+                          onFilterPressed(context);
+                        },
+                        icon: const Icon(Icons.tune),
                       ),
                       IconButton(
-                          onPressed: () => {}, icon: const Icon(Icons.tune)),
+                        onPressed: () {
+                          onSettingsPressed(context);
+                        },
+                        icon: const Icon(Icons.settings),
+                      ),
                     ],
                   ),
                 ],
@@ -248,21 +218,36 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   onRefresh: () async {
                     getRoomLists();
                   },
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics()),
-                    controller: _scrollController,
-                    children: [
-                      for (var roomItem in roomList)
-                        GestureDetector(
-                          onTap: () => onRoomItemTapped(context, roomItem),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: roomItem,
+                  child: roomList.isEmpty
+                      ? const Expanded(
+                          child: Center(
+                            child: Text("No Room!"),
                           ),
                         )
-                    ],
-                  ),
+                      : ListView(
+                          physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics()),
+                          controller: _scrollController,
+                          children: [
+                            for (var roomItem in roomList)
+                              filterOptions["studyType"]![
+                                              roomItem.room.studyType] ==
+                                          true ||
+                                      filterOptions["isPublic"]![
+                                              roomItem.room.isPublic] ==
+                                          true
+                                  ? GestureDetector(
+                                      onTap: () =>
+                                          onRoomItemTapped(context, roomItem),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: roomItem,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink()
+                          ],
+                        ),
                 ),
               ),
               Padding(

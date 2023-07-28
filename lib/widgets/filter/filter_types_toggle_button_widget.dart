@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
-class RoomTypesToggleButton extends StatefulWidget {
+class FilterTypesToggleButton extends StatefulWidget {
   final String typeName;
   final List<Widget> options;
   final Function notifier;
-  const RoomTypesToggleButton(
+  const FilterTypesToggleButton(
       {super.key,
       required this.typeName,
       required this.options,
       required this.notifier});
 
   @override
-  State<RoomTypesToggleButton> createState() => _RoomTypesToggleButtonState();
+  State<FilterTypesToggleButton> createState() =>
+      _FilterTypesToggleButtonState();
 }
 
-class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
+class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
   late final List<bool> _selections =
       List.generate(widget.options.length, (_) => false);
 
@@ -31,12 +32,20 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
       setState(() {
         _selections.asMap().forEach((key, value) {
           if (key == index) {
-            _selections[index] = true;
-          } else {
-            _selections[key] = false;
+            var count = 0;
+            for (var element in _selections) {
+              if (element == true) count++;
+            }
+            if (_selections[index] == true) {
+              if (count > 1) {
+                _selections[index] = !_selections[index];
+              }
+            } else {
+              _selections[index] = !_selections[index];
+            }
           }
         });
-        widget.notifier(index);
+        widget.notifier(_selections);
       });
     }
   }
@@ -69,7 +78,7 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
             borderRadius: const BorderRadius.all(Radius.circular(8)),
             constraints: BoxConstraints(
               minHeight: 40.0,
-              minWidth: width * 0.74 / _selections.length,
+              minWidth: width * 0.6 / _selections.length,
             ),
             onPressed: onPressed,
             children: widget.options,

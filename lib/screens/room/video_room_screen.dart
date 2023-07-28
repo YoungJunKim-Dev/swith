@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swith/models/room_model.dart';
 import 'package:swith/models/user_model.dart';
 import 'package:swith/services/signaling_service.dart';
-import 'package:swith/widgets/chat_bottom_sheet_widget.dart';
+import 'package:swith/widgets/chat/chat_bottom_sheet_widget.dart';
 //import webrtc & socketIO package
 
 class VideoRoomScreen extends StatefulWidget {
@@ -97,24 +97,15 @@ class _VideoRoomScreenState extends State<VideoRoomScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.room.roomId),
+        ),
         body: Padding(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.only(bottom: 25, left: 25, right: 25),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Chat Room : ${widget.room.roomId}",
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
               const SizedBox(
                 height: 20,
               ),
