@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/message_model.dart';
@@ -26,8 +27,8 @@ class _ChatState extends State<Chat> {
   var logger = Logger();
 
   late SignallingService signallingService;
-  final _messageController = TextEditingController();
-  final _scrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   var chats = [];
 
@@ -36,9 +37,11 @@ class _ChatState extends State<Chat> {
     signallingService = widget.signallingService;
     signallingService.socket?.on("message", (message) {
       chats.add(MessageModel.fromJson(message));
+
       if (mounted) {
         setState(() {});
       }
+      SchedulerBinding.instance.addPostFrameCallback((_) => scrollToEnd());
     });
     signallingService.socket?.on("welcome", (content) {
       var message = MessageModel(
@@ -54,6 +57,13 @@ class _ChatState extends State<Chat> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void onSendPressed() {
@@ -74,7 +84,20 @@ class _ChatState extends State<Chat> {
       chats.add(message);
     }
     _messageController.clear();
+
     setState(() {});
+    SchedulerBinding.instance.addPostFrameCallback((_) => scrollToEnd());
+  }
+
+  void scrollToEnd() async {
+    if (_scrollController.hasClients) {
+      await _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+    }
+    // Scrollable.ensureVisible(lastKey.currentContext);
   }
 
   @override
@@ -86,9 +109,14 @@ class _ChatState extends State<Chat> {
           controller: _scrollController,
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          padding: const EdgeInsets.only(top: 16, left: 16, bottom: 20),
+          // padding: const EdgeInsets.only(top: 16, left: 16, bottom: 20),
           itemCount: chats.length,
           itemBuilder: (__, index) {
+            // if (index == chats.length) {
+            //   return const SizedBox(
+            //     height: 30,
+            //   );
+            // }
             var detail = {
               "isMyMessage": false,
               "showUserId": true,
@@ -128,8 +156,7 @@ class _ChatState extends State<Chat> {
             Expanded(
               child: TextField(
                 controller: _messageController,
-                decoration:
-                    const InputDecoration(labelText: "send a message..."),
+                decoration: const InputDecoration(labelText: "메세지 보내기..."),
               ),
             ),
             IconButton(

@@ -70,8 +70,8 @@ class ChatBubble extends StatelessWidget {
                 //you can change opacity with color here(I used black) for rect
                 color: detail["isMyMessage"] == true
                     // ? Colors.white.withOpacity(0.1)
-                    ? const Color(0xff1F8AFF)
-                    : const Color(0xff808080),
+                    ? const Color(0xff218aff)
+                    : const Color(0xffd8d8d8),
 
                 //I added some shadow, but you can remove boxShadow also.
                 boxShadow: const <BoxShadow>[
@@ -85,6 +85,13 @@ class ChatBubble extends StatelessWidget {
               child: Text(
                 message.content,
                 softWrap: true,
+                style: TextStyle(
+                    color: detail["isMyMessage"] == true
+                        ?
+                        // ? Colors.white.withOpacity(0.1)
+                        Colors.white
+                        : Colors.black,
+                    fontWeight: FontWeight.w500),
               ),
             ),
           ),

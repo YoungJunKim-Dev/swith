@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:swith/screens/room_list_screen.dart';
 import 'package:swith/widgets/filter/filter_types_toggle_button_widget.dart';
 
 class FilterDialog extends StatefulWidget {
-  const FilterDialog({
-    super.key,
-  });
+  final FilterOptions filterOptions;
+  const FilterDialog({super.key, required this.filterOptions});
 
   @override
   State<FilterDialog> createState() => _FilterDialogState();
 }
 
 class _FilterDialogState extends State<FilterDialog> {
-  List<bool> broadcastType = [true, false];
-  List<bool> studyType = [false, false, false, false];
-  List<bool> isPublic = [false, false];
-  List<bool> chatType = [true, false];
+  FilterOptions filterOptions = {
+    "broadcastType": [true, false],
+    "studyType": [false, false, false, false],
+    "isPublic": [false, false],
+    "chatType": [true, false]
+  };
 
   @override
   void initState() {
+    filterOptions = widget.filterOptions;
     super.initState();
   }
 
@@ -26,38 +29,33 @@ class _FilterDialogState extends State<FilterDialog> {
     super.dispose();
   }
 
-  void onSubmit() {
+  void onSubmit(context) {
     if (mounted) {
       Navigator.pop(
         context,
-        {
-          "broadcastType": broadcastType,
-          "studyType": studyType,
-          "isPublic": isPublic,
-          "chatType": chatType
-        },
+        filterOptions,
       );
     }
   }
 
   //bt 버튼 클릭 이벤트
   void setChatType(ct) {
-    chatType = ct;
+    filterOptions["chatType"] = ct;
   }
 
   //bt 버튼 클릭 이벤트
   void setBroadcastType(bt) {
-    broadcastType = bt;
+    filterOptions["broadcastType"] = bt;
   }
 
   //st 버튼 클릭 이벤트
   void setStudyType(st) {
-    studyType = st;
+    filterOptions["studyType"] = st;
   }
 
   //ip 버튼 클릭 이벤트
   void setIsPublic(ip) {
-    isPublic = ip;
+    filterOptions["isPublic"] = ip;
   }
 
   @override
@@ -69,6 +67,7 @@ class _FilterDialogState extends State<FilterDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FilterTypesToggleButton(
+            selections: filterOptions["chatType"]!,
             typeName: "chatType",
             options: const [
               Text("Message"),
@@ -80,6 +79,7 @@ class _FilterDialogState extends State<FilterDialog> {
             height: 16,
           ),
           FilterTypesToggleButton(
+            selections: filterOptions["broadcastType"]!,
             typeName: "broadcastType",
             options: const [Icon(Icons.people), Icon(Icons.groups)],
             notifier: (idx) => setBroadcastType(idx),
@@ -88,6 +88,7 @@ class _FilterDialogState extends State<FilterDialog> {
             height: 16,
           ),
           FilterTypesToggleButton(
+            selections: filterOptions["studyType"]!,
             typeName: "studyType",
             options: const [
               Text("수능"),
@@ -101,6 +102,7 @@ class _FilterDialogState extends State<FilterDialog> {
             height: 16,
           ),
           FilterTypesToggleButton(
+            selections: filterOptions["isPublic"]!,
             typeName: "isPublic",
             options: const [
               Text("Public"),
@@ -111,7 +113,11 @@ class _FilterDialogState extends State<FilterDialog> {
           const SizedBox(
             height: 10,
           ),
-          TextButton(onPressed: () {}, child: const Text("Submit")),
+          TextButton(
+              onPressed: () {
+                onSubmit(context);
+              },
+              child: const Text("Submit")),
         ],
       ),
     );

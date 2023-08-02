@@ -69,10 +69,15 @@ class _AppState extends State<App> {
         theme: ThemeData(
           fontFamily: 'Nanum Square Round',
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.amber, brightness: Brightness.light),
+              seedColor: const Color(0xffFF9494), brightness: Brightness.light),
           useMaterial3: true,
         ),
-        darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+        darkTheme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.dark,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xff00ADB5),
+                brightness: Brightness.dark)),
         themeMode: ThemeMode.system,
         home: FutureBuilder<bool>(
           future: _getJWT(),

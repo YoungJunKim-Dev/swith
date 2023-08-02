@@ -17,10 +17,31 @@ class RoomTypesToggleButton extends StatefulWidget {
 class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
   late final List<bool> _selections =
       List.generate(widget.options.length, (_) => false);
+  String typeInKorean = "";
 
   @override
   void initState() {
     _selections[0] = true;
+    switch (widget.typeName) {
+      case 'broadcastType':
+        typeInKorean = "인원";
+        break;
+
+      case 'chatType':
+        typeInKorean = "채팅";
+
+        break;
+
+      case 'studyType':
+        typeInKorean = "공부";
+
+        break;
+
+      case 'isPublic':
+        typeInKorean = "공개";
+
+        break;
+    }
     super.initState();
   }
 
@@ -51,7 +72,7 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
       children: [
         Padding(
           padding: EdgeInsets.only(left: width * 0.08),
-          child: Text(widget.typeName),
+          child: Text(typeInKorean),
         ),
         const SizedBox(
           height: 8,
@@ -59,7 +80,8 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
         Center(
           child: ToggleButtons(
             isSelected: _selections,
-            color: widget.typeName == "broadcastType"
+            color: widget.typeName == "broadcastType" ||
+                    widget.typeName == "chatType"
                 ? Theme.of(context).colorScheme.onSecondary
                 : Theme.of(context).colorScheme.primaryContainer,
             selectedColor: Theme.of(context).colorScheme.onPrimaryContainer,

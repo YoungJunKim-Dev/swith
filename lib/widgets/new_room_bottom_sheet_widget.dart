@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/room_model.dart';
@@ -32,6 +33,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
 
   final TextEditingController _roomIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   late SignallingService signallingService;
   var logger = Logger();
@@ -103,8 +105,10 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
       "already_exist",
       (data) {
         logger.d("already exist");
-        alreadyExist = true;
+
         if (mounted) {
+          alreadyExist = true;
+          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(data),
@@ -122,6 +126,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
   void dispose() {
     _roomIdController.dispose();
     _passwordController.dispose();
+    _scrollController.dispose();
 
     super.dispose();
   }
@@ -131,8 +136,6 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
     logger.d(roomId.isEmpty);
     if (roomId.isEmpty) {
       return 'Please enter room name';
-    } else if (alreadyExist) {
-      return "Already exist";
     }
     return null;
   }
@@ -187,6 +190,15 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
     isPublic = ip;
     if (ip == 0) password = "none";
     setState(() {});
+    SchedulerBinding.instance.addPostFrameCallback((_) => scrollToEnd());
+  }
+
+  void scrollToEnd() async {
+    await _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut);
+    // Scrollable.ensureVisible(lastKey.currentContext);
   }
 
   @override
@@ -203,7 +215,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Create Room",
+                  "새로운 방 만들기",
                   style: TextStyle(fontSize: 18),
                 ),
                 const SizedBox(
@@ -211,16 +223,34 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: TextFormField(
-                    controller: _roomIdController,
-                    validator: roomIdValidator,
-                    maxLength: 12,
-                    decoration: InputDecoration(
-                      hintText: 'Enter room name',
-                      suffixIcon: IconButton(
-                        onPressed: _roomIdController.clear,
-                        icon: const Icon(Icons.clear),
+                  child: Focus(
+                    onFocusChange: (hasFocus) {
+                      alreadyExist = false;
+                      setState(() {});
+                    },
+                    child: TextFormField(
+                      controller: _roomIdController,
+                      validator: roomIdValidator,
+                      maxLength: 12,
+                      decoration: InputDecoration(
+                        hintText: '방 이름을 입력하세요',
+                        suffixIcon: IconButton(
+                          onPressed: _roomIdController.clear,
+                          icon: const Icon(Icons.clear),
+                        ),
                       ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Visibility(
+                    visible: alreadyExist,
+                    child: const Text(
+                      "같은 이름이 이미 존재합니다",
+                      style: TextStyle(color: Colors.redAccent),
                     ),
                   ),
                 ),
@@ -229,13 +259,14 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
+                    controller: _scrollController,
                     child: Column(
                       children: [
                         RoomTypesToggleButton(
                           typeName: "chatType",
                           options: const [
-                            Text("Message"),
-                            Text("Video"),
+                            Text("메세지"),
+                            Text("화상"),
                           ],
                           notifier: (idx) => setChatType(idx),
                         ),
@@ -269,8 +300,8 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                         RoomTypesToggleButton(
                           typeName: "isPublic",
                           options: const [
-                            Text("Public"),
-                            Text("Private"),
+                            Text("공개"),
+                            Text("비공개"),
                           ],
                           notifier: (idx) => setIsPublic(idx),
                         ),
@@ -292,7 +323,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                                       validator: passwordValidator,
                                       maxLength: 6,
                                       decoration: const InputDecoration(
-                                        hintText: 'Password',
+                                        hintText: '비밀번호',
                                       ),
                                     ),
                                   ),
@@ -314,7 +345,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                   child: const Padding(
                     padding: EdgeInsets.all(8),
                     child: Text(
-                      "Create",
+                      "생성",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),

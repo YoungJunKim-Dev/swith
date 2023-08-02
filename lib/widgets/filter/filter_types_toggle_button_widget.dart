@@ -4,11 +4,13 @@ class FilterTypesToggleButton extends StatefulWidget {
   final String typeName;
   final List<Widget> options;
   final Function notifier;
+  final List<bool> selections;
   const FilterTypesToggleButton(
       {super.key,
       required this.typeName,
       required this.options,
-      required this.notifier});
+      required this.notifier,
+      required this.selections});
 
   @override
   State<FilterTypesToggleButton> createState() =>
@@ -16,12 +18,11 @@ class FilterTypesToggleButton extends StatefulWidget {
 }
 
 class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
-  late final List<bool> _selections =
-      List.generate(widget.options.length, (_) => false);
+  late final List<bool> _selections = widget.selections;
 
   @override
   void initState() {
-    _selections[0] = true;
+    // _selections[0] = true;
     super.initState();
   }
 
@@ -59,7 +60,7 @@ class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: width * 0.08),
+          padding: EdgeInsets.only(left: width * 0.02),
           child: Text(widget.typeName),
         ),
         const SizedBox(

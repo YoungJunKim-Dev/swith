@@ -12,6 +12,8 @@ import 'package:swith/widgets/password_dialog_widget.dart';
 import 'package:swith/widgets/room_list_item_widget.dart';
 import 'package:swith/widgets/new_room_bottom_sheet_widget.dart';
 
+typedef FilterOptions = Map<String, List<bool>>;
+
 class RoomListScreen extends StatefulWidget {
   final UserModel user;
   const RoomListScreen({super.key, required this.user});
@@ -25,7 +27,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
   final ScrollController _scrollController = ScrollController();
 
   //방 목록 필터 옵션
-  var filterOptions = {
+  FilterOptions filterOptions = {
     "broadcastType": [true, false],
     "studyType": [true, true, true, true],
     "chatType": [true, false],
@@ -120,7 +122,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
             user: widget.user,
           );
         },
-      ).then((value) => filterOptions = value);
+      );
     }
   }
 
@@ -138,9 +140,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return const FilterDialog();
+        return FilterDialog(
+          filterOptions: filterOptions,
+        );
       },
-    );
+    ).then((value) {
+      filterOptions = value ?? filterOptions;
+      getRoomLists();
+    });
   }
 
   void onNewRoomPressed(context) {
@@ -163,11 +170,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Center(child: Text("Rooms")),
+          title: const Center(child: Text("방 목록")),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => onNewRoomPressed(context),
-          label: const Text('New Room'),
+          label: const Text('방 만들기'),
           icon: const Icon(Icons.chat),
         ),
         body: Padding(
@@ -178,8 +185,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  (defaultTargetPlatform == TargetPlatform.iOS) ||
-                          (defaultTargetPlatform == TargetPlatform.android)
+                  roomList.isNotEmpty &&
+                          ((defaultTargetPlatform == TargetPlatform.iOS) ||
+                              (defaultTargetPlatform == TargetPlatform.android))
                       ? const SizedBox.shrink()
                       : IconButton(
                           onPressed: () async {
@@ -219,10 +227,8 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     getRoomLists();
                   },
                   child: roomList.isEmpty
-                      ? const Expanded(
-                          child: Center(
-                            child: Text("No Room!"),
-                          ),
+                      ? const Center(
+                          child: Text("방이 없습니다!"),
                         )
                       : ListView(
                           physics: const BouncingScrollPhysics(
@@ -232,7 +238,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             for (var roomItem in roomList)
                               filterOptions["studyType"]![
                                               roomItem.room.studyType] ==
-                                          true ||
+                                          true &&
                                       filterOptions["isPublic"]![
                                               roomItem.room.isPublic] ==
                                           true
