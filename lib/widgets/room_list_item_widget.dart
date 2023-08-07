@@ -26,23 +26,23 @@ class RoomListItem extends StatelessWidget {
                 Text(
                   room.roomId,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w800, fontSize: 26),
+                      fontWeight: FontWeight.w900, fontSize: 26),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  room.creator,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                      color: Color(0xff007BC8)),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Row(
                   children: [
-                    Text(
-                      room.creator,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Colors.blueAccent),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
                     Text(
                       chatTypeOptions[room.chatType],
                       style: const TextStyle(
@@ -86,7 +86,9 @@ class RoomListItem extends StatelessWidget {
             ),
             IconButton(
               onPressed: () => {},
-              icon: const Icon(Icons.meeting_room),
+              icon: room.isPublic == 0
+                  ? const Icon(Icons.meeting_room)
+                  : const Icon(Icons.lock),
             )
           ],
         ),

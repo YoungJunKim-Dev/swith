@@ -82,8 +82,8 @@ class _RoomTypesToggleButtonState extends State<RoomTypesToggleButton> {
             isSelected: _selections,
             color: widget.typeName == "broadcastType" ||
                     widget.typeName == "chatType"
-                ? Theme.of(context).colorScheme.onSecondary
-                : Theme.of(context).colorScheme.primaryContainer,
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Colors.grey,
             selectedColor: Theme.of(context).colorScheme.onPrimaryContainer,
             fillColor: Theme.of(context).colorScheme.onPrimary,
             splashColor: Theme.of(context).colorScheme.onPrimary,

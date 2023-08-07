@@ -30,33 +30,6 @@ class _LoginFormState extends State<LoginForm> {
   bool _visibility = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    //textfield controllers
-    _emailController.addListener(() {
-      final String text = _emailController.text;
-      _emailController.value = _emailController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-      logger.d(_emailController.value.text);
-    });
-    _passwordController.addListener(() {
-      final String text = _passwordController.text;
-      _passwordController.value = _passwordController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-      logger.d(_passwordController.value.text);
-    });
-  }
-
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -70,7 +43,7 @@ class _LoginFormState extends State<LoginForm> {
     String email = value.trim();
 
     if (!emailValid.hasMatch(email)) {
-      return 'Please enter your right email';
+      return '이메일 형식에 맞게 입력해주세요';
     }
     return null;
   }
@@ -81,7 +54,7 @@ class _LoginFormState extends State<LoginForm> {
     String password = value.trim();
 
     if (!passwordValid.hasMatch(password)) {
-      return 'Please enter your right password';
+      return '비밀번호 형식에 맞게 입력해주세요';
     }
     return null;
   }
@@ -111,12 +84,15 @@ class _LoginFormState extends State<LoginForm> {
         //show login success snackbar & navigate to roomlistscreen
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('LogIn Success')),
+            const SnackBar(content: Text('로그인 성공')),
           );
-          Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context).push(
+            MaterialPageRoute(
               builder: (context) => RoomListScreen(
-                    user: user,
-                  )));
+                user: user,
+              ),
+            ),
+          );
         } // else
       } else {
         _visibility = true;
@@ -149,7 +125,7 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(
             height: 20,
           ),
-          const Text("Login with Your Account"),
+          const Text("로그인"),
           const SizedBox(
             height: 14,
           ),
@@ -164,7 +140,7 @@ class _LoginFormState extends State<LoginForm> {
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: "Email",
+                labelText: "이메일",
                 suffixIcon: IconButton(
                     onPressed: () => {_emailController.text = ""},
                     icon: const Icon(Icons.cancel)),
@@ -185,7 +161,7 @@ class _LoginFormState extends State<LoginForm> {
               obscureText: _isObscured,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
-                labelText: "Password",
+                labelText: "비밀번호",
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                     onPressed: () => {
@@ -206,7 +182,7 @@ class _LoginFormState extends State<LoginForm> {
             child: Visibility(
                 visible: _visibility,
                 child: const Text(
-                  "You entered Wrong Email or Password",
+                  "이메일 또는 비밀번호를 잘못 입력하셨습니다",
                   style: TextStyle(color: Colors.redAccent),
                 )),
           ),
@@ -220,10 +196,16 @@ class _LoginFormState extends State<LoginForm> {
                 ElevatedButton(
                   onPressed: onLogInPressed,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    backgroundColor: const Color(0xffFF9494),
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
-                  child: const Text('Log In'),
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20),
+                  ),
                 ),
                 const SizedBox(
                   height: 16,
@@ -231,42 +213,50 @@ class _LoginFormState extends State<LoginForm> {
                 ElevatedButton(
                   onPressed: onSignUpPressed,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
-                  child: const Text('Sign Up'),
+                  child: const Text(
+                    '회원가입',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.grey),
+                  ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => {
-                        _emailController.text = "son7@gmail.com",
-                        _passwordController.text = "1Q2w3e4r!"
-                      },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 34)),
-                      child: const Text('손흥민'),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => {
-                        _emailController.text = "hgd@gmail.com",
-                        _passwordController.text = "1Q2w3e4r!"
-                      },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 34) // NEW
-                          ),
-                      child: const Text('홍길동'),
-                    ),
-                  ],
-                )
+                // const SizedBox(
+                //   height: 16,
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () => {
+                //         _emailController.text = "son7@gmail.com",
+                //         _passwordController.text = "1Q2w3e4r!"
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //           padding: const EdgeInsets.symmetric(
+                //               vertical: 20, horizontal: 34)),
+                //       child: const Text('손흥민'),
+                //     ),
+                //     const SizedBox(
+                //       width: 8,
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () => {
+                //         _emailController.text = "hgd@gmail.com",
+                //         _passwordController.text = "1Q2w3e4r!"
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //           padding: const EdgeInsets.symmetric(
+                //               vertical: 20, horizontal: 34) // NEW
+                //           ),
+                //       child: const Text('홍길동'),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ),

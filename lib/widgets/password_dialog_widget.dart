@@ -31,17 +31,28 @@ class _PasswordDialogState extends State<PasswordDialog> {
   void initState() {
     _passwordController.addListener(
       () {
-        final String text = _passwordController.text;
-        _passwordController.value = _passwordController.value.copyWith(
-          text: text,
-          selection:
-              TextSelection(baseOffset: text.length, extentOffset: text.length),
-          composing: TextRange.empty,
-        );
         password = _passwordController.value.text;
       },
     );
-    widget.signallingService.socket?.on("join_private_room", (data) {
+    widget.signallingService.socket?.on(
+      "wrong_password",
+      (data) {
+        _visibility = true;
+        setState(() {});
+      },
+    );
+    addSocket();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void addSocket() {
+    widget.signallingService.socket?.on("success_join_private_room", (data) {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
@@ -58,26 +69,22 @@ class _PasswordDialogState extends State<PasswordDialog> {
         );
       }
     });
-    widget.signallingService.socket?.on("wrong_password", (data) {
-      _visibility = true;
-      setState(() {});
+    widget.signallingService.socket?.on("fail_join_private_room", (data) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data)),
+        );
+      }
     });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    super.dispose();
   }
 
   String? passwordValidator(value) {
     String password = value.trim();
     if (password.isEmpty) {
-      return 'Enter PW';
+      return '비번입력';
     }
     if (password.length < 6) {
-      return "6digits";
+      return "6자리";
     }
     return null;
   }
@@ -95,7 +102,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Enter Room Password"),
+      title: const Text("비밀번호를 입력하세요"),
       content: Form(
         key: _formKey,
         child: Column(
@@ -114,6 +121,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   controller: _passwordController,
                   validator: passwordValidator,
+                  obscureText: true,
                   maxLength: 6,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.zero,
@@ -130,7 +138,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
               child: Visibility(
                   visible: _visibility,
                   child: const Text(
-                    "Wrong Password",
+                    "잘못된 비밀번호 입니다",
                     style: TextStyle(color: Colors.redAccent),
                   )),
             ),

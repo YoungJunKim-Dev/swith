@@ -14,6 +14,23 @@ class ApiService {
     }
   }
 
+  static Future<bool> deleteUser(jwt, userEmail, userPassword) async {
+    final uri = Uri.parse('$baseUrl/api/users/');
+
+    var response = await http.delete(uri, headers: {
+      'Authorization': jwt
+    }, body: {
+      'user_email': userEmail,
+      'user_password': userPassword,
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print(response.body);
+      return false;
+    }
+  }
+
   static Future<http.Response> postSignUp(
       userEmail, userPassword, userName) async {
     final uri = Uri.parse('$baseUrl/api/users/signup');

@@ -32,51 +32,6 @@ class _SignupFormState extends State<SignupForm> {
   bool _visibility = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    //textfield controllers
-    _emailController.addListener(() {
-      final String text = _emailController.text;
-      _emailController.value = _emailController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-    });
-    _nameController.addListener(() {
-      final String text = _nameController.text;
-      _nameController.value = _nameController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-      logger.d(_nameController.value.text);
-    });
-    _passwordController.addListener(() {
-      final String text = _passwordController.text;
-      _passwordController.value = _passwordController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-    });
-    _confirmPasswordController.addListener(() {
-      final String text = _confirmPasswordController.text;
-      _confirmPasswordController.value =
-          _confirmPasswordController.value.copyWith(
-        text: text,
-        selection:
-            TextSelection(baseOffset: text.length, extentOffset: text.length),
-        composing: TextRange.empty,
-      );
-    });
-  }
-
-  @override
   void dispose() {
     _emailController.dispose();
     _nameController.dispose();
@@ -93,7 +48,7 @@ class _SignupFormState extends State<SignupForm> {
     String email = value.trim();
 
     if (!emailValid.hasMatch(email)) {
-      return 'Please enter your right email';
+      return '이메일 형식에 맞게 입력해주세요';
     }
     return null;
   }
@@ -104,7 +59,7 @@ class _SignupFormState extends State<SignupForm> {
     String name = value.trim();
 
     if (!nameValid.hasMatch(name)) {
-      return 'Please enter right name';
+      return '알맞은 이름을 입력해주세요';
     }
     return null;
   }
@@ -115,7 +70,7 @@ class _SignupFormState extends State<SignupForm> {
     String password = value.trim();
 
     if (!passwordValid.hasMatch(password)) {
-      return 'Please enter your right password';
+      return '비밀번호 형식에 맞게 입력해주세요';
     }
     return null;
   }
@@ -126,7 +81,7 @@ class _SignupFormState extends State<SignupForm> {
 
     logger.d(confirmPassword != _passwordController.text);
     if (confirmPassword != _passwordController.text) {
-      return 'Passwords doesn\'t match';
+      return '비밀번호가 일치하지 않습니다';
     }
     return null;
   }
@@ -140,7 +95,7 @@ class _SignupFormState extends State<SignupForm> {
       if (response.statusCode == 200) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('SignUp Success!')),
+            const SnackBar(content: Text('회원가입 성공!')),
           );
           Navigator.of(context).pop();
         }
@@ -168,7 +123,7 @@ class _SignupFormState extends State<SignupForm> {
           const SizedBox(
             height: 20,
           ),
-          const Text("Create Your Account"),
+          const Text("계정을 생성하세요"),
           const SizedBox(
             height: 14,
           ),
@@ -182,7 +137,7 @@ class _SignupFormState extends State<SignupForm> {
               validator: emailValidator,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: "Email",
+                labelText: "이메일",
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                     onPressed: () => {_emailController.text = ""},
@@ -203,7 +158,7 @@ class _SignupFormState extends State<SignupForm> {
               validator: nameValidator,
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
-                labelText: "Name",
+                labelText: "이름",
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                     onPressed: () => {_nameController.text = ""},
@@ -225,7 +180,7 @@ class _SignupFormState extends State<SignupForm> {
               obscureText: _isObscured,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
-                labelText: "Password",
+                labelText: "비밀번호",
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                     onPressed: () => {
@@ -248,7 +203,7 @@ class _SignupFormState extends State<SignupForm> {
             obscureText: _isObscured,
             keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(
-              labelText: "Confirm Password",
+              labelText: "비밀번호 확인",
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
                   onPressed: () => {
@@ -268,7 +223,7 @@ class _SignupFormState extends State<SignupForm> {
             child: Visibility(
                 visible: _visibility,
                 child: const Text(
-                  "Email already exist",
+                  "같은 이메일이 이미 존재합니다",
                   style: TextStyle(color: Colors.redAccent),
                 )),
           ),
@@ -282,44 +237,52 @@ class _SignupFormState extends State<SignupForm> {
                 ElevatedButton(
                   onPressed: onSignupPressed,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffFF9494),
+
                     minimumSize: const Size.fromHeight(50), // NEW
                   ),
-                  child: const Text('Sign Up'),
+                  child: const Text(
+                    '회원가입',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20),
+                  ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => {
-                        _emailController.text = "son7@gmail.com",
-                        _passwordController.text = "1Q2w3e4r!",
-                        _confirmPasswordController.text = "1Q2w3e4r!"
-                      },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 34)),
-                      child: const Text('손흥민'),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => {
-                        _emailController.text = "hgd@gmail.com",
-                        _passwordController.text = "1Q2w3e4r!",
-                        _confirmPasswordController.text = "1Q2w3e4r!"
-                      },
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 34) // NEW
-                          ),
-                      child: const Text('홍길동'),
-                    ),
-                  ],
-                )
+                // const SizedBox(
+                //   height: 16,
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () => {
+                //         _emailController.text = "son7@gmail.com",
+                //         _passwordController.text = "1Q2w3e4r!",
+                //         _confirmPasswordController.text = "1Q2w3e4r!"
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //           padding: const EdgeInsets.symmetric(
+                //               vertical: 20, horizontal: 34)),
+                //       child: const Text('손흥민'),
+                //     ),
+                //     const SizedBox(
+                //       width: 8,
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () => {
+                //         _emailController.text = "hgd@gmail.com",
+                //         _passwordController.text = "1Q2w3e4r!",
+                //         _confirmPasswordController.text = "1Q2w3e4r!"
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //           padding: const EdgeInsets.symmetric(
+                //               vertical: 20, horizontal: 34) // NEW
+                //           ),
+                //       child: const Text('홍길동'),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ),

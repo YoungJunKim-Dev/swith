@@ -5,6 +5,7 @@ class FilterTypesToggleButton extends StatefulWidget {
   final List<Widget> options;
   final Function notifier;
   final List<bool> selections;
+
   const FilterTypesToggleButton(
       {super.key,
       required this.typeName,
@@ -19,10 +20,30 @@ class FilterTypesToggleButton extends StatefulWidget {
 
 class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
   late final List<bool> _selections = widget.selections;
+  String typeInKorean = "";
 
   @override
   void initState() {
-    // _selections[0] = true;
+    switch (widget.typeName) {
+      case 'broadcastType':
+        typeInKorean = "인원";
+        break;
+
+      case 'chatType':
+        typeInKorean = "채팅";
+
+        break;
+
+      case 'studyType':
+        typeInKorean = "공부";
+
+        break;
+
+      case 'isPublic':
+        typeInKorean = "공개";
+
+        break;
+    }
     super.initState();
   }
 
@@ -61,7 +82,7 @@ class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
       children: [
         Padding(
           padding: EdgeInsets.only(left: width * 0.02),
-          child: Text(widget.typeName),
+          child: Text(typeInKorean),
         ),
         const SizedBox(
           height: 8,
@@ -69,11 +90,12 @@ class _FilterTypesToggleButtonState extends State<FilterTypesToggleButton> {
         Center(
           child: ToggleButtons(
             isSelected: _selections,
-            color: widget.typeName == "broadcastType"
-                ? Theme.of(context).colorScheme.onSecondary
-                : Theme.of(context).colorScheme.primaryContainer,
+            color: widget.typeName == "broadcastType" ||
+                    widget.typeName == "chatType"
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Colors.grey,
             selectedColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            fillColor: Theme.of(context).colorScheme.onPrimary,
+            fillColor: Theme.of(context).colorScheme.onSecondary,
             splashColor: Theme.of(context).colorScheme.onPrimary,
             highlightColor: Theme.of(context).colorScheme.onPrimary,
             borderRadius: const BorderRadius.all(Radius.circular(8)),

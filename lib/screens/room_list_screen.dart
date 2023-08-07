@@ -60,6 +60,47 @@ class _RoomListScreenState extends State<RoomListScreen> {
       updateRoomList(data);
     });
     getRoomLists();
+    addSocket();
+  }
+
+  void addSocket() {
+    signallingService.socket?.on("success_join_room", (data) {
+      var map = {
+        "roomId": data["roomId"],
+        "creator": data["attributes"]['creator'],
+        "password": data["attributes"]['password'],
+        "broadcastType": data["attributes"]['broadcastType'],
+        "studyType": data["attributes"]['studyType'],
+        "isPublic": data["attributes"]['isPublic'],
+        "chatType": data["attributes"]['chatType'],
+      };
+
+      RoomModel room = RoomModel.fromJson(map);
+
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) {
+            return room.chatType == 0
+                ? ChatRoomScreen(
+                    room: room,
+                    signallingService: signallingService,
+                    user: widget.user)
+                : VideoRoomScreen(
+                    room: room,
+                    signallingService: signallingService,
+                    user: widget.user);
+          }),
+        );
+      }
+    });
+    signallingService.socket?.on("fail_join_room", (data) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data)),
+        );
+      }
+      getRoomLists();
+    });
   }
 
   void getRoomLists() {
@@ -98,20 +139,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
     if (roomItem.room.isPublic == 0) {
       signallingService.socket?.emit("join_room",
           {"roomId": roomItem.room.roomId, "username": widget.user.userName});
-
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) {
-          return roomItem.room.chatType == 0
-              ? ChatRoomScreen(
-                  room: roomItem.room,
-                  signallingService: signallingService,
-                  user: widget.user)
-              : VideoRoomScreen(
-                  room: roomItem.room,
-                  signallingService: signallingService,
-                  user: widget.user);
-        }),
-      );
     } else {
       showDialog(
         context: context,

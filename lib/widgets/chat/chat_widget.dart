@@ -56,6 +56,19 @@ class _ChatState extends State<Chat> {
         setState(() {});
       }
     });
+    signallingService.socket?.on("leave_room", (content) {
+      var message = MessageModel(
+          userId: 0,
+          sender: "_leave",
+          roomId: widget.room.roomId,
+          timestamp: DateTime.now(),
+          content: content);
+      chats.add(message);
+      logger.d(content);
+      if (mounted) {
+        setState(() {});
+      }
+    });
     super.initState();
   }
 
@@ -139,8 +152,9 @@ class _ChatState extends State<Chat> {
                 detail["showTimestamp"] = false;
               }
             }
-            //welcome 메세지일 경우 detail 설정
-            if (currentMessage.sender == "_welcome") {
+            //welcome or leave 메세지일 경우 detail 설정
+            if (currentMessage.sender == "_welcome" ||
+                currentMessage.sender == "_leave") {
               detail["showUserId"] = false;
               detail["showTimestamp"] = false;
             }

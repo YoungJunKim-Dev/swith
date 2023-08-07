@@ -19,21 +19,26 @@ class Profile extends StatelessWidget {
         const SizedBox(
           width: 20,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              userName,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 30),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              userEmail,
-              style: const TextStyle(fontSize: 20),
-            )
-          ],
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.538,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userName,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 30),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                userEmail,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 20),
+              )
+            ],
+          ),
         )
       ],
     );

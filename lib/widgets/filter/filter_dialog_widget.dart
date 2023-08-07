@@ -61,7 +61,7 @@ class _FilterDialogState extends State<FilterDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Center(child: Text("Select filter options")),
+      title: const Center(child: Text("필터 옵션을 선택하세요")),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -70,8 +70,8 @@ class _FilterDialogState extends State<FilterDialog> {
             selections: filterOptions["chatType"]!,
             typeName: "chatType",
             options: const [
-              Text("Message"),
-              Text("Video"),
+              Text("메세지"),
+              Text("화상"),
             ],
             notifier: (idx) => setChatType(idx),
           ),
@@ -105,8 +105,8 @@ class _FilterDialogState extends State<FilterDialog> {
             selections: filterOptions["isPublic"]!,
             typeName: "isPublic",
             options: const [
-              Text("Public"),
-              Text("Private"),
+              Text("공개"),
+              Text("비공개"),
             ],
             notifier: (idx) => setIsPublic(idx),
           ),
@@ -117,7 +117,7 @@ class _FilterDialogState extends State<FilterDialog> {
               onPressed: () {
                 onSubmit(context);
               },
-              child: const Text("Submit")),
+              child: const Text("확인")),
         ],
       ),
     );

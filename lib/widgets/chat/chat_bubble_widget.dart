@@ -42,7 +42,7 @@ class ChatBubble extends StatelessWidget {
                 ),
               ),
             ),
-        if (message.sender == "_welcome")
+        if (message.sender == "_welcome" || message.sender == "_leave")
           Padding(
             padding: const EdgeInsets.only(
               top: 10,
@@ -55,7 +55,7 @@ class ChatBubble extends StatelessWidget {
               ),
             ),
           ),
-        if (message.sender != "_welcome")
+        if (message.sender != "_welcome" && message.sender != "_leave")
           Align(
             alignment: detail["isMyMessage"] == true
                 ? Alignment.topRight
@@ -70,7 +70,8 @@ class ChatBubble extends StatelessWidget {
                 //you can change opacity with color here(I used black) for rect
                 color: detail["isMyMessage"] == true
                     // ? Colors.white.withOpacity(0.1)
-                    ? const Color(0xff218aff)
+                    // ? const Color(0xff218aff)
+                    ? const Color(0xffFF9494)
                     : const Color(0xffd8d8d8),
 
                 //I added some shadow, but you can remove boxShadow also.

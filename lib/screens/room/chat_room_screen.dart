@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:swith/models/room_model.dart';
 import 'package:swith/models/user_model.dart';
 import 'package:swith/services/signaling_service.dart';
@@ -19,6 +20,7 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  Logger logger = Logger();
   late SignallingService signallingService;
   final List chatHistory = [];
 

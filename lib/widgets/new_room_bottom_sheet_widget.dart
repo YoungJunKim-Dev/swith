@@ -43,26 +43,12 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
     //roomId text 컨트롤러 addListener
     _roomIdController.addListener(
       () {
-        final String text = _roomIdController.text;
-        _roomIdController.value = _roomIdController.value.copyWith(
-          text: text,
-          selection:
-              TextSelection(baseOffset: text.length, extentOffset: text.length),
-          composing: TextRange.empty,
-        );
-        roomId = _roomIdController.value.text;
+        roomId = _roomIdController.text;
       },
     );
     _passwordController.addListener(
       () {
-        final String text = _passwordController.text;
-        _passwordController.value = _passwordController.value.copyWith(
-          text: text,
-          selection:
-              TextSelection(baseOffset: text.length, extentOffset: text.length),
-          composing: TextRange.empty,
-        );
-        password = _passwordController.value.text;
+        password = _passwordController.text;
       },
     );
 
@@ -334,7 +320,7 @@ class _NewRoomBottomSheetState extends State<NewRoomBottomSheet> {
                   ),
                 ),
                 const SizedBox(
-                  height: 16,
+                  height: 8,
                 ),
                 TextButton(
                   onPressed: () => onCreateRoomPressed(context),
