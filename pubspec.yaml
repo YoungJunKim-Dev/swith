@@ -44,7 +44,7 @@ dependencies:
 
   logger: ^1.4.0
 
-  provider: ^6.0.5
+  #provider: ^6.0.5
 
   #date format
   intl: ^0.18.1

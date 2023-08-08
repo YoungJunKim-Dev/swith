@@ -1,4 +1,4 @@
-package com.example.swith
+package com.yjkdev.swith
 
 import io.flutter.embedding.android.FlutterActivity
 
