@@ -29,7 +29,6 @@ class SignallingService {
         IO.OptionBuilder().setTransports(['websocket'])
             // .enableForceNew()
             .build());
-    socket?.on('test', (data) => print(data));
   }
 
   // getMedia

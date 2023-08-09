@@ -30,8 +30,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     signallingService = widget.signallingService;
-    signallingService.socket?.on("welcome", (data) => print(data));
-    // init();
     super.initState();
   }
 
@@ -41,10 +39,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     signallingService.socket?.emit("leave_room",
         {"myUsername": widget.user.userName, "roomId": widget.room.roomId});
     super.dispose();
-  }
-
-  void init() {
-    // signallingService.connectSocket();
   }
 
   void onClosePressed() {

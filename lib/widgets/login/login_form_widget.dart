@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
@@ -28,6 +27,7 @@ class _LoginFormState extends State<LoginForm> {
   bool _isObscured = true;
   //error 문구 visibility 변수
   bool _visibility = false;
+  String errorMessage = "";
 
   @override
   void dispose() {
@@ -65,38 +65,44 @@ class _LoginFormState extends State<LoginForm> {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
 
-      http.Response response = await ApiService.postLogIn(
+      var response = await ApiService.postLogIn(
           _emailController.text, _passwordController.text);
 
-      if (response.statusCode == 200) {
-        logger.d(response.body);
-        var result = jsonDecode(response.body);
-        user = UserModel.fromJson({
-          "userId": result["user_id"],
-          "userName": result["user_name"],
-          "userEmail": _emailController.text
-        });
-
-        // saveJWT
-        await widget.storage.write(key: 'jwt', value: result["token"]);
-        await widget.storage.write(key: 'user_info', value: jsonEncode(user));
-
-        //show login success snackbar & navigate to roomlistscreen
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('로그인 성공')),
-          );
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => RoomListScreen(
-                user: user,
-              ),
-            ),
-          );
-        } // else
-      } else {
-        _visibility = true;
+      if (response.runtimeType == String) {
+        errorMessage = response;
         setState(() {});
+      } else {
+        if (response.statusCode == 200) {
+          logger.d(response.body);
+          var result = jsonDecode(response.body);
+          user = UserModel.fromJson({
+            "userId": result["user_id"],
+            "userName": result["user_name"],
+            "userEmail": _emailController.text
+          });
+
+          // saveJWT
+          await widget.storage.write(key: 'jwt', value: result["token"]);
+          await widget.storage.write(key: 'user_info', value: jsonEncode(user));
+
+          //show login success snackbar & navigate to roomlistscreen
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('로그인 성공')),
+            );
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => RoomListScreen(
+                  user: user,
+                ),
+              ),
+            );
+          } // else
+        } else {
+          _visibility = true;
+          errorMessage = "이메일 또는 비밀번호를 잘못 입력하셨습니다";
+          setState(() {});
+        }
       }
     }
   }
@@ -181,9 +187,9 @@ class _LoginFormState extends State<LoginForm> {
           Center(
             child: Visibility(
                 visible: _visibility,
-                child: const Text(
-                  "이메일 또는 비밀번호를 잘못 입력하셨습니다",
-                  style: TextStyle(color: Colors.redAccent),
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.redAccent),
                 )),
           ),
           const SizedBox(

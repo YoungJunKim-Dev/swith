@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.example.swith"
+    namespace "com.yjkdev.swith"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

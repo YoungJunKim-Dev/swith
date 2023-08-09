@@ -35,10 +35,7 @@ class _VideoRoomScreenState extends State<VideoRoomScreen> {
   void initState() {
     // _localRenderer.initialize();
     // _remoteRenderer.initialize();
-    // signallingService = SignallingService();
     signallingService = widget.signallingService;
-    signallingService.socket?.on("welcome", (data) => print(data));
-    // init();
     super.initState();
   }
 
@@ -50,10 +47,6 @@ class _VideoRoomScreenState extends State<VideoRoomScreen> {
     signallingService.socket?.emit(
         "leave_room", {"myUsername": myUsername, "roomId": widget.room.roomId});
     super.dispose();
-  }
-
-  void init() {
-    // signallingService.connectSocket();
   }
 
   //비디오 온오프

@@ -22,6 +22,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
   bool _isObscured = true;
   //error 문구 visibility 변수
   bool _visibility = false;
+  String errorMessage = "";
 
   @override
   void dispose() {
@@ -61,12 +62,25 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       if (jwt != null) {
         // 토큰 검증
         var isSucceeded = await ApiService.deleteUser(
-            jwt, _emailController.text, _passwordController.text);
-        print("success : $isSucceeded");
-        if (isSucceeded) {
-          storage.delete(key: "jwt");
-          if (context.mounted) {
-            Navigator.popUntil(context, ModalRoute.withName("/"));
+          jwt,
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        if (isSucceeded.runtimeType == String) {
+          errorMessage = isSucceeded;
+          _visibility = true;
+          setState(() {});
+        } else {
+          if (isSucceeded) {
+            storage.delete(key: "jwt");
+            if (context.mounted) {
+              Navigator.popUntil(context, ModalRoute.withName("/"));
+            }
+          } else {
+            errorMessage = "이메일 또는 비밀번호를 잘못 입력하셨습니다";
+            _visibility = true;
+            setState(() {});
           }
         }
       }
@@ -151,9 +165,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               Center(
                 child: Visibility(
                     visible: _visibility,
-                    child: const Text(
-                      "이메일 또는 비밀번호를 잘못 입력하셨습니다",
-                      style: TextStyle(color: Colors.redAccent),
+                    child: Text(
+                      errorMessage,
+                      style: const TextStyle(color: Colors.redAccent),
                     )),
               ),
               Padding(

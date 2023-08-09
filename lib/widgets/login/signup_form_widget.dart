@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:swith/models/user_model.dart';
@@ -30,6 +29,7 @@ class _SignupFormState extends State<SignupForm> {
   String passwordInput = "";
   bool _isObscured = true;
   bool _visibility = false;
+  String errorMessage = "";
 
   @override
   void dispose() {
@@ -88,20 +88,26 @@ class _SignupFormState extends State<SignupForm> {
 
   void onSignupPressed() async {
     if (_formKey.currentState!.validate()) {
-      http.Response response = await ApiService.postSignUp(
-          _emailController.text,
-          _passwordController.text,
-          _nameController.text);
-      if (response.statusCode == 200) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('회원가입 성공!')),
-          );
-          Navigator.of(context).pop();
-        }
-      } else {
+      var response = await ApiService.postSignUp(_emailController.text,
+          _passwordController.text, _nameController.text);
+
+      if (response.runtimeType == String) {
         _visibility = true;
+        errorMessage = response;
         setState(() {});
+      } else {
+        if (response.statusCode == 200) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('회원가입 성공!')),
+            );
+            Navigator.of(context).pop();
+          }
+        } else {
+          _visibility = true;
+          errorMessage = "같은 이메일이 이미 존재합니다";
+          setState(() {});
+        }
       }
     }
   }
@@ -222,9 +228,9 @@ class _SignupFormState extends State<SignupForm> {
           Center(
             child: Visibility(
                 visible: _visibility,
-                child: const Text(
-                  "같은 이메일이 이미 존재합니다",
-                  style: TextStyle(color: Colors.redAccent),
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.redAccent),
                 )),
           ),
           const SizedBox(
