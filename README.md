@@ -102,7 +102,8 @@ Flutter를 활용한 앱 개발 및 출시와 Socket.io를 경험해보는 것�
 <div align="center">
 <img src="https://github.com/YoungJunKim-Dev/swith/assets/114643395/2521c931-9d95-4195-9031-d6059cb8bc33" width="200"/></div>
 <br>
-초기화면인 방 목록 화면에서 방 만들기 버튼을 클릭하면 bottom sheet이 올라오고 방의 제목, 타입 선택, 비밀번호 생성 등의 기능등을 통하여 새로운 방을 생성할 수 있습니다.
+
+- 초기화면인 방 목록 화면에서 방 만들기 버튼을 클릭하면 bottom sheet이 올라오고 방의 제목, 타입 선택, 비밀번호 생성 등의 기능등을 통하여 새로운 방을 생성할 수 있습니다.
 
 <br>
 
@@ -146,6 +147,7 @@ Socket.io를 사용하여 일반 채팅방을 구현하였습니다. 초기에�
 <div align="center">
 <img src="https://github.com/YoungJunKim-Dev/swith/assets/114643395/ca785e7e-f834-413a-8be6-f59378bae32b" width="200"/>
 </div>
+
 - 로그인 시도시 1차적으로 입력된 email로 회원이 존재하는지 확인합니다. 그 다음으로 email이 존재한다면 입력된 비밀번호와 DB에 저장된 회원정보의 비밀번호 해시값이랑 비교합니다.
 - 존재하는 email로 로그인을 시도하고 비밀번호가 일치한다면 JWT 토큰을 발행합니다. JWT 토큰은 FlutterSecureStorage에 저장되도록 하였습니다.
 - 자동 로그인 기능은 JWT 토큰이 저장되어 있는지 저장되어 있다면 그 토큰이 유효한지에 따라 로그인 화면으로 이동할지 방목록 화면으로 이동할지 달라집니다. Server에서는 passport모듈의 JWT Strategy를 사용하여 Authorization 절차를 수행합니다.
@@ -157,6 +159,7 @@ Socket.io를 사용하여 일반 채팅방을 구현하였습니다. 초기에�
 <div align="center">
 <img src="https://github.com/YoungJunKim-Dev/swith/assets/114643395/2533cca9-4bc4-4d0d-a2ab-f25f70988906" width="200"/>
 </div>
+
 - 회원가입 신청 시 서버에서 중복되는 이메일이 있는지 확인을 하고, 이미 존재하는 이메일로 가입 시도 시 에러 메시지를 통해 유저가 인지할 수 있습니다.
 - 회원가입시 비밀번호는 bcrypt를 이용하여 해시 암호화를 적용하고 해시값을 DB에 저장하였습니다.
 
@@ -167,4 +170,5 @@ Socket.io를 사용하여 일반 채팅방을 구현하였습니다. 초기에�
 <div align="center">
 <img src="https://github.com/YoungJunKim-Dev/swith/assets/114643395/05677bb2-9cce-488d-9bd8-dde155f1ab25" width="200"/>
 </div>
+
 - 회원탈퇴를 위해 이메일과 비밀번호를 한번 더 확인한 후에 탈퇴가 가능하도록 하였습니다.
