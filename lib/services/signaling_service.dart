@@ -25,7 +25,7 @@ class SignallingService {
 
   connectSocket() {
     socket = IO.io(
-        'http://100.21.156.51:5001',
+        'http://34.213.212.63:5001',
         IO.OptionBuilder().setTransports(['websocket'])
             // .enableForceNew()
             .build());

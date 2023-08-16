@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "http://100.21.156.51:5001";
+  static const String baseUrl = "https://dev.youngjunkim.me";
 
   static Future<bool> getAuthentication(jwt) async {
-    final uri = Uri.parse('$baseUrl/api/users/authentication');
+    final uri = Uri.parse('$baseUrl/swith_api/users/authentication/');
 
     try {
       var response = await http.get(uri, headers: {'Authorization': jwt});
@@ -19,7 +19,7 @@ class ApiService {
   }
 
   static Future<dynamic> deleteUser(jwt, userEmail, userPassword) async {
-    final uri = Uri.parse('$baseUrl/api/users/');
+    final uri = Uri.parse('$baseUrl/swith_api/users/');
 
     try {
       var response = await http.delete(uri, headers: {
@@ -41,7 +41,7 @@ class ApiService {
 
   // static Future<http.Response> postSignUp(
   static Future<dynamic> postSignUp(userEmail, userPassword, userName) async {
-    final uri = Uri.parse('$baseUrl/api/users/signup');
+    final uri = Uri.parse('$baseUrl/swith_api/users/signup/');
 
     try {
       return await http.post(uri, body: {
@@ -57,7 +57,7 @@ class ApiService {
   // static Future<http.Response> postLogIn(userEmail, userPassword) async {
   static Future<dynamic> postLogIn(userEmail, userPassword) async {
     try {
-      final uri = Uri.parse('$baseUrl/api/users/login');
+      final uri = Uri.parse('$baseUrl/swith_api/users/login/');
 
       return await http.post(uri,
           body: {'user_email': userEmail, 'user_password': userPassword});
